@@ -1,0 +1,14 @@
+dataset_id: _smoke_mixed
+name: Smoke fixture _smoke_mixed
+task_type: classification
+target: target
+source:
+  type: other
+  url: ''
+  external_id: null
+file:
+  name: data.csv
+  format: csv
+problem:
+  type: multiclass
+notes: Small reproducible integration fixture; excluded from scientific claims.

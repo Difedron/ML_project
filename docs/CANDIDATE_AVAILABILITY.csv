@@ -1,0 +1,22 @@
+model,canonical_id,available,compute,dependency,reason,family,artifact_available
+FastaiMLP,fastai,False,cpu,"tabarena, autogluon.tabular, fastai","missing dependencies: tabarena, autogluon.tabular, fastai","MLP-based,non-TFM",True
+ModernNCA,modernnca,False,gpu,"tabarena, autogluon.tabular, torch, category_encoders","missing dependencies: tabarena, autogluon.tabular, category_encoders; historical GPU variant requires CUDA GPU","MLP-based,non-TFM",True
+TorchMLP,nn_torch,False,cpu,"tabarena, autogluon.tabular, torch","missing dependencies: tabarena, autogluon.tabular","MLP-based,non-TFM",True
+RealMLP,realmlp,False,gpu,"tabarena, autogluon.tabular, torch, pytabkit","missing dependencies: tabarena, autogluon.tabular, pytabkit; historical GPU variant requires CUDA GPU","MLP-based,non-TFM",True
+TabM,tabm,False,gpu,"tabarena, autogluon.tabular, torch, tabm, rtdl_num_embeddings","missing dependencies: tabarena, autogluon.tabular, tabm, rtdl_num_embeddings; historical GPU variant requires CUDA GPU","MLP-based,non-TFM",True
+CatBoost,catboost,False,cpu,"tabarena, autogluon.tabular, catboost","missing dependencies: tabarena, autogluon.tabular","Tree-based,non-TFM",True
+LightGBM,lightgbm,False,cpu,"tabarena, autogluon.tabular, lightgbm","missing dependencies: tabarena, autogluon.tabular","Tree-based,non-TFM",True
+XGBoost,xgboost,False,cpu,"tabarena, autogluon.tabular, xgboost","missing dependencies: tabarena, autogluon.tabular, xgboost","Tree-based,non-TFM",True
+EBM,ebm,False,cpu,"tabarena, autogluon.tabular, interpret","missing dependencies: tabarena, autogluon.tabular, interpret","Tree-based,non-TFM",True
+PerpetualBooster,perpetualboost,False,cpu,"tabarena, autogluon.tabular, perpetual","missing dependencies: tabarena, autogluon.tabular, perpetual","Tree-based,non-TFM",True
+ExtraTrees,extra_trees,False,cpu,"tabarena, autogluon.tabular, sklearn","missing dependencies: tabarena, autogluon.tabular","Tree-based,non-TFM",True
+RandomForest,random_forest,False,cpu,"tabarena, autogluon.tabular, sklearn","missing dependencies: tabarena, autogluon.tabular","Tree-based,non-TFM",True
+KNN,knn,False,cpu,"tabarena, autogluon.tabular, sklearn","missing dependencies: tabarena, autogluon.tabular",non-TFM,True
+Linear,logistic_regression,False,cpu,"tabarena, autogluon.tabular, sklearn","missing dependencies: tabarena, autogluon.tabular",non-TFM,True
+TabDPT,tabdpt,False,gpu,"tabarena, autogluon.tabular, torch, tabdpt","missing dependencies: tabarena, autogluon.tabular, tabdpt; historical GPU variant requires CUDA GPU; Local checkpoint + SHA256 not configured; license/authentication may be required to obtain weights",TFM,True
+TabSTAR,tabstar,False,gpu,"tabarena, autogluon.tabular, torch, tabstar","missing dependencies: tabarena, autogluon.tabular, tabstar; historical GPU variant requires CUDA GPU; Local checkpoint + SHA256 not configured; license/authentication may be required to obtain weights",TFM,True
+TabICL,tabicl_v1,False,gpu,"tabarena, autogluon.tabular, torch, tabicl","missing dependencies: tabarena, autogluon.tabular; historical GPU variant requires CUDA GPU; Local checkpoint + SHA256 not configured; license/authentication may be required to obtain weights",TFM,True
+TabICLv2,tabicl_v2,False,gpu,"tabarena, autogluon.tabular, torch, tabicl","missing dependencies: tabarena, autogluon.tabular; historical GPU variant requires CUDA GPU; Local checkpoint + SHA256 not configured; license/authentication may be required to obtain weights",TFM,True
+TabPFNv2,tabpfn_v2,False,gpu,"tabarena, autogluon.tabular, torch, tabpfn","missing dependencies: tabarena, autogluon.tabular; historical GPU variant requires CUDA GPU; Local checkpoint + SHA256 not configured; license/authentication may be required to obtain weights",TFM,True
+TabPFN-2.6,tabpfn_2_6,False,gpu,"tabarena, autogluon.tabular, torch, tabpfn","missing dependencies: tabarena, autogluon.tabular; historical GPU variant requires CUDA GPU; Local checkpoint + SHA256 not configured; license/authentication may be required to obtain weights",TFM,True
+RealTabPFN-2.5,realtabpfn_v2_5,False,gpu,"tabarena, autogluon.tabular, torch, tabpfn","missing dependencies: tabarena, autogluon.tabular; historical GPU variant requires CUDA GPU; Local checkpoint + SHA256 not configured; license/authentication may be required to obtain weights",TFM,True

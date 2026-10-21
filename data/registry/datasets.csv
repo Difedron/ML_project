@@ -1,0 +1,4 @@
+dataset_id,name,target,task_type,source_type,source_url,external_id,file_name,file_format,status,n_rows,n_features,n_classes,error_message
+_smoke_iris,Smoke fixture _smoke_iris,target,classification,other,,,data.csv,csv,valid,150,4,3,
+_smoke_mixed,Smoke fixture _smoke_mixed,target,classification,other,,,data.csv,csv,valid,90,3,3,
+_toy_binary,Toy Binary — local infrastructure example,target,classification,other,,,data.csv,csv,valid,30,3,2,

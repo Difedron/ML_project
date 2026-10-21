@@ -1,0 +1,21 @@
+dataset_id: _toy_binary
+name: Toy Binary — local infrastructure example
+task_type: classification
+target: target
+
+source:
+  type: other
+  url: ""
+  external_id: null
+
+file:
+  name: data.csv
+  format: csv
+  separator: ","
+  encoding: utf-8
+  sheet_name: null
+
+problem:
+  type: binary
+
+notes: "30 искусственных строк только для проверки архитектуры. Не использовать в исследовании."

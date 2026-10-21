@@ -1,0 +1,43 @@
+schema_version: 1
+splits:
+  random_seed: 42
+  validation_fraction: 0.2
+  test_fraction: 0.2
+paper_features:
+  confirmed: false
+  label: paper-style reconstruction
+  groups: [general, statistical, info-theory, model-based]
+  summaries: [mean, sd, min, max, median]
+  random_seed: 42
+  imputation: train_only_median_and_mode
+pymfe_standard_landmarking:
+  groups: [landmarking]
+  summaries: [mean, sd]
+  random_seed: 42
+  num_cv_folds: 3
+  shuffle_cv_folds: true
+  score: accuracy
+custom_landmarkers:
+  models:
+    - logistic_regression
+    - decision_tree
+    - knn
+    - gaussian_nb
+    - lda
+  scoring: balanced_accuracy
+  n_splits: 3
+  random_seed: 42
+  max_dense_cells: 20000000
+  parameters:
+    logistic_regression: {max_iter: 1000, C: 1.0}
+    decision_tree: {max_depth: 3}
+    knn: {n_neighbors: 5}
+    gaussian_nb: {var_smoothing: 1.0e-9}
+    lda: {solver: lsqr, shrinkage: auto}
+meta_predictor:
+  model_version: '2.6'
+  checkpoint: null
+  checkpoint_sha256: null
+  device: cpu
+  random_seed: 42
+  # No automatic downloads or fallback to a newer generation.

@@ -1,0 +1,10 @@
+schema_version: 1
+num_cpus: 1
+num_gpus: 1
+time_limit: 120
+# Explicit single-default local protocol, not the full historical HPO/bagging benchmark.
+protocol: official_registry_single_default
+weights: {}
+# weights entries: canonical_id: {path: /absolute/file, sha256: ..., parameter: model_path}
+# TabPFN-2.6 / RealTabPFN-v2.5 use the verified zip_model_path bridge automatically.
+hyperparameters: {}

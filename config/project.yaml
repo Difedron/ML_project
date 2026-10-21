@@ -1,0 +1,9 @@
+random_seed: 42
+
+paths:
+  raw_data: data/raw
+  processed_data: data/processed
+  registry: data/registry/datasets.csv
+  results: results
+  splits: data/splits
+  derived: data/derived

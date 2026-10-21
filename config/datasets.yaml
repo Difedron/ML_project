@@ -1,0 +1,6 @@
+# Only global reader defaults. Individual datasets belong in metadata.yaml.
+csv:
+  separator: ","
+  encoding: utf-8
+xlsx:
+  sheet_name: null

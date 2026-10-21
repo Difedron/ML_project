@@ -1,0 +1,7 @@
+dataset_source,dataset_id,split_id,model_id,model_version,exact_model_id,metric,validation_error,test_error,artifact_id
+tabarena,APSFailure,0,tabicl_v2,v2,tabarena-2026-02-16::TabICLv2::TABICLV2 (default),roc_auc,0.0076877400100942017,0.0045068917572612666,tabicl_v2
+tabarena,APSFailure,1,tabicl_v2,v2,tabarena-2026-02-16::TabICLv2::TABICLV2 (default),roc_auc,0.0059614539436549929,0.006703254262579228,tabicl_v2
+tabarena,APSFailure,2,tabicl_v2,v2,tabarena-2026-02-16::TabICLv2::TABICLV2 (default),roc_auc,0.007498791668264948,0.0053931667068968236,tabicl_v2
+tabarena,APSFailure,0,tabpfn_2_6,2.6,tabarena-2026-03-18::TabPFN-v2.6::TABPFN-V2.6 (default),roc_auc,0.0099570231068004666,0.004894319090003596,tabpfn_2_6
+tabarena,APSFailure,1,tabpfn_2_6,2.6,tabarena-2026-03-18::TabPFN-v2.6::TABPFN-V2.6 (default),roc_auc,0.0074473457801549348,0.008343156832195997,tabpfn_2_6
+tabarena,APSFailure,2,tabpfn_2_6,2.6,tabarena-2026-03-18::TabPFN-v2.6::TABPFN-V2.6 (default),roc_auc,0.0082925751987854568,0.0072832722564788455,tabpfn_2_6

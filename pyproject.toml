@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meta-selector"
+version = "0.1.0"
+description = "Dataset catalog and audited TabArena pairwise performance-gap infrastructure"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26,<3", "pandas>=2.2,<4", "PyYAML>=6,<7", "pyarrow>=16,<27", "openpyxl>=3.1,<4",
+  "scikit-learn>=1.5,<2", "pymfe==0.4.4", "packaging>=23",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+meta-model = ["tabpfn>=9.2,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
