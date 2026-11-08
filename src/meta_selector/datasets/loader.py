@@ -1,6 +1,7 @@
-"""Local file readers: no download, target inference, encoding or preprocessing."""
+"""Local readers with explicit categorical types; no inference, encoding or imputation."""
 import codecs
 import csv
+import hashlib
 import re
 from collections import Counter
 from pathlib import Path
@@ -71,6 +72,9 @@ def read_metadata(dataset_id: str, paths: ProjectPaths) -> DatasetMetadata:
         separator = file.get("separator", defaults.get("csv", {}).get("separator", ","))
         encoding = file.get("encoding", defaults.get("csv", {}).get("encoding", "utf-8"))
         sheet = file.get("sheet_name", defaults.get("xlsx", {}).get("sheet_name"))
+        sha256 = file.get("sha256")
+        if sha256 is not None and (not isinstance(sha256, str) or not re.fullmatch(r"[0-9a-f]{64}", sha256)):
+            raise ValueError("file.sha256 должен быть SHA-256 из 64 строчных hex-символов или null")
         if file_format == "csv":
             if not isinstance(separator, str) or len(separator) != 1 or separator in "\r\n":
                 raise ValueError("file.separator должен быть одним символом-разделителем CSV")
@@ -86,9 +90,18 @@ def read_metadata(dataset_id: str, paths: ProjectPaths) -> DatasetMetadata:
         notes = raw.get("notes", "")
         if not isinstance(notes, str):
             raise ValueError("notes должен быть строкой")
+        categorical = raw.get("categorical_columns", [])
+        if (not isinstance(categorical, list)
+                or any(not isinstance(column, str) or not column.strip() for column in categorical)):
+            raise ValueError("categorical_columns должен быть списком непустых имён колонок")
+        if len(categorical) != len(set(categorical)):
+            raise ValueError("categorical_columns содержит повторяющиеся имена")
+        if target in categorical:
+            raise ValueError("categorical_columns не должен включать target")
         return DatasetMetadata(dataset_id, name, task_type, target,
             SourceMetadata(source_type, url, str(external_id) if external_id is not None else None),
-            FileMetadata(filename, file_format, separator, encoding, sheet), ProblemMetadata(problem_type), notes)
+            FileMetadata(filename, file_format, separator, encoding, sheet, sha256),
+            ProblemMetadata(problem_type), notes, tuple(categorical))
     except (OSError, ValueError, TypeError, LookupError, yaml.YAMLError) as exc:
         raise DatasetReadError(DatasetStatus.INVALID_METADATA, str(exc)) from exc
 
@@ -109,6 +122,11 @@ def read_frame(metadata: DatasetMetadata, paths: ProjectPaths) -> pd.DataFrame:
         raise DatasetReadError(DatasetStatus.INVALID_METADATA, "Файл должен находиться внутри папки датасета")
     options = metadata.file
     try:
+        if options.sha256 is not None:
+            with path.open("rb") as stream:
+                actual = hashlib.file_digest(stream, "sha256").hexdigest()
+            if actual != options.sha256:
+                raise DatasetReadError(DatasetStatus.INVALID, f"SHA-256 mismatch: {options.name}")
         if options.format == "csv":
             with path.open(encoding=options.encoding, newline="") as stream:
                 reader = csv.reader(stream, delimiter=options.separator)
@@ -137,6 +155,12 @@ def read_frame(metadata: DatasetMetadata, paths: ProjectPaths) -> pd.DataFrame:
             _check_headers(pq.read_schema(path).names)
             frame = pd.read_parquet(path, engine="pyarrow")
         _check_headers(frame.columns.tolist())
+        missing = [column for column in metadata.categorical_columns if column not in frame]
+        if missing:
+            raise DatasetReadError(DatasetStatus.INVALID_METADATA,
+                                   f"categorical_columns отсутствуют в таблице: {missing!r}")
+        for column in metadata.categorical_columns:
+            frame[column] = frame[column].astype("category")
         return frame
     except DatasetReadError:
         raise

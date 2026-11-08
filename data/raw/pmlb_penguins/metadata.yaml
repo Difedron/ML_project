@@ -1,0 +1,29 @@
+dataset_id: pmlb_penguins
+name: penguins
+task_type: classification
+target: target
+source:
+  type: pmlb
+  external_id: penguins
+  url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/penguins
+file:
+  name: penguins.csv
+  format: csv
+  separator: ','
+  encoding: utf-8
+  sha256: f9989e6cf026364b44cc02426334c886f49c231d5229f83a849f670fb54ed40d
+problem:
+  type: multiclass
+categorical_columns:
+- island
+- sex
+notes: Explicit pilot typing; ordinal factors use categorical representation. Original
+  CSV bytes and unknown-category codes are preserved.
+provenance:
+  original_name: penguins
+  original_path: data/PMLB/penguins.csv
+  selection_report: docs/PMLB_PILOT_SELECTION.md
+  metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+  description_url: https://allisonhorst.github.io/palmerpenguins/reference/penguins.html
+  origin_group: pmlb_penguins
+  unknown_categories: {}

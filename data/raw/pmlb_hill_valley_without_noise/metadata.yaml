@@ -1,0 +1,27 @@
+dataset_id: pmlb_hill_valley_without_noise
+name: Hill_Valley_without_noise
+task_type: classification
+target: target
+source:
+  type: pmlb
+  external_id: Hill_Valley_without_noise
+  url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/Hill_Valley_without_noise
+file:
+  name: Hill_Valley_without_noise.csv
+  format: csv
+  separator: ','
+  encoding: utf-8
+  sha256: 0f6439d66eabb0db8e80dab4a95d239d44a8b3190175e15b92d42fc349594e07
+problem:
+  type: binary
+categorical_columns: []
+notes: Explicit pilot typing; ordinal factors use categorical representation. Original
+  CSV bytes and unknown-category codes are preserved.
+provenance:
+  original_name: Hill_Valley_without_noise
+  original_path: data/PMLB/Hill_Valley_without_noise.csv
+  selection_report: docs/PMLB_PILOT_SELECTION.md
+  metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+  description_url: https://archive.ics.uci.edu/dataset/166/hill+valley
+  origin_group: pmlb_hill_valley
+  unknown_categories: {}

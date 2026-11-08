@@ -22,3 +22,8 @@ TFM = Family("TFM", ("tabdpt", "tabstar", "tabicl_v2", "tabicl_v1", "tabpfn_v2",
 TABICL_V1 = Family("TabICL v1", ("tabicl_v1",))
 TABPFN_V2 = Family("TabPFN v2", ("tabpfn_v2",))
 REALTABPFN_V2_5 = Family("RealTabPFN v2.5", ("realtabpfn_v2_5",))
+
+# Local pilot methods are variants, deliberately separate from the historical roster.
+LIGHTGBM = Family("LightGBM", ("lightgbm",))
+LIGHTGBM_PRIORTUNE_K25 = Family("LightGBM + PriorTune K=25", ("lightgbm_priortune_k25",))
+PMLB_PILOT_MODELS = ("tabpfn_2_6", "tabicl_v2", "lightgbm", "lightgbm_priortune_k25")

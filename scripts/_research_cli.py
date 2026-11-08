@@ -10,15 +10,16 @@ from meta_selector.paths import read_yaml_mapping
 
 def batch_main(kind):
     parser = argparse.ArgumentParser(description=f"Compute {kind} on local outer-training portions only")
-    selection = parser.add_mutually_exclusive_group(required=True)
-    selection.add_argument("dataset_ids", nargs="*")
-    selection.add_argument("--all-local", action="store_true")
+    parser.add_argument("dataset_ids", nargs="*")
+    parser.add_argument("--all-local", action="store_true")
     parser.add_argument("--project-root")
     parser.add_argument("--config", help="Research YAML override")
     parser.add_argument("--split-id", default="holdout_0")
     if kind == "meta_features":
         parser.add_argument("--without-standard-landmarking", action="store_true")
     args = parser.parse_args()
+    if bool(args.dataset_ids) == args.all_local:
+        parser.error("Supply dataset IDs or --all-local, exclusively")
     config = read_yaml_mapping(Path(args.config)) if args.config else research_config(args.project_root)
     ids = local_ids(args.project_root) if args.all_local else args.dataset_ids
     if not ids:
