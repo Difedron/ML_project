@@ -1,3 +1,8 @@
 data/PMLB/*.csv filter=lfs diff=lfs merge=lfs -text
-data/splits/pmlb_*/holdout_0.json -text
+
+# Rita: preserve original dataset and split bytes
+data/splits/pmlb_*/holdout_0.json -text whitespace=cr-at-eol
 data/raw/pmlb_*/*.csv -text
+
+# Diana: preserve shared pilot split bytes
+config/pilot_splits/** -text whitespace=cr-at-eol

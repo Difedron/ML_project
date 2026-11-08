@@ -1,0 +1,63 @@
+schema_version: 1
+model_family: lightgbm
+variant: baseline
+package_version: '4.7.0'
+definition: explicit_project_baseline
+paper_baseline_confirmed: false
+reason: No single fully specified standalone default baseline was located in the examined PriorTune sources.
+api: lightgbm.LGBMClassifier
+device: cpu
+objective_by_task:
+  binary: binary
+  multiclass: multiclass
+selection_metric_by_task:
+  binary: {name: roc_auc, lightgbm_name: auc, direction: maximize}
+  multiclass: {name: log_loss, lightgbm_name: multi_logloss, direction: minimize}
+model_params:
+  boosting_type: gbdt
+  num_leaves: 31
+  max_depth: -1
+  learning_rate: 0.05
+  n_estimators: 1000
+  subsample_for_bin: 200000
+  class_weight: null
+  min_split_gain: 0.0
+  min_child_weight: 0.001
+  min_child_samples: 20
+  subsample: 1.0
+  subsample_freq: 0
+  colsample_bytree: 1.0
+  reg_alpha: 0.0
+  reg_lambda: 0.0
+  random_state: 42
+  n_jobs: 1
+  importance_type: split
+  cat_l2: 10.0
+  cat_smooth: 10.0
+  max_cat_to_onehot: 4
+  min_data_per_group: 100
+  max_bin: 255
+  data_random_seed: 42
+  feature_fraction_seed: 42
+  bagging_seed: 42
+  deterministic: true
+  force_col_wise: true
+  device_type: cpu
+  verbosity: -1
+fit_policy:
+  early_stopping_rounds: 50
+  early_stopping_first_metric_only: true
+  early_stopping_min_delta: 0.0
+  early_stopping_data: validation_only
+  refit_train_plus_validation: false
+  num_class: derived_from_training_labels_for_multiclass
+preprocessing:
+  tabprep: false
+  numeric_missing_values: native_lightgbm
+  categorical_dictionary_fit_on: train_only
+  unknown_categories: missing
+notes:
+  - This freezes project-level model and fit settings, not every inactive LightGBM engine option.
+  - Remaining engine options are frozen by the exact package version and must be captured in future fit provenance.
+  - PriorTune published configs keep their own model_seed and hyperparameters; they are not overwritten by this baseline.
+  - Official PriorTune uses AutoGluon callbacks; native baseline timing and training budget are not claimed identical to the paper.

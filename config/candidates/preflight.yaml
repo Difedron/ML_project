@@ -1,0 +1,40 @@
+schema_version: 1
+device: auto
+worker_timeout_seconds: 60
+source_revisions:
+  priortune: 104a255b4ad86755638c183e7749d60a64a6d903
+  tabpfn: 4992bca68cc6cb4db4551b4668d1b95a201b9006
+  tabicl: d83091b845a8c5f7c087bd54964f755a9e560f45
+checkpoints:
+  tabpfn:
+    repo_id: Prior-Labs/tabpfn_2_6
+    revision: 24148873a9a5992b429833d07363690dcffd02a8
+    filename: tabpfn-v2.6-classifier-v2.6_default.ckpt
+    sha256: 0578fa56f97e11024e31735aaec2c4e7332584b7730242fbaf6c0bbd0299206a
+    size_bytes: 43044699
+    local_path: null
+  tabicl:
+    repo_id: jingang/TabICL
+    revision: 4dcd344ece2c00be9e831fdd35bed57b5ad83e19
+    filename: tabicl-classifier-v2-20260212.ckpt
+    sha256: bdc7dbd5e4ff21f8f0456fcf90c6b7cdf72dbea960f2d05b19bec19f9b3d4ed0
+    size_bytes: 110368038
+    local_path: null
+portfolio:
+  repo_id: mrsergazinov/PriorTune
+  revision: 8b9cab4c0d6569ddda5cc2a18d78e0de75c526ee
+  path: portfolios/lgbm/T_K25.json
+  model: lgbm
+  rule: T
+  k: 25
+  sha256: 322a4e87966223ec268cdf390ba8d7a58e3b13d2a2a4a7f4dddd3989ab2688e5
+  cache_path: .cache/diana_preflight/hf/portfolios/lgbm/T_K25.json
+  selection_metric_by_task:
+    binary:
+      name: roc_auc
+      direction: maximize
+    multiclass:
+      name: log_loss
+      direction: minimize
+  tabprep: false
+  ensemble: false
