@@ -1,0 +1,706 @@
+schema_version: 1
+pilot_id: rita_pmlb_pilot_10
+join_keys:
+- dataset_id
+- split_id
+- seed
+source_bundle:
+  archive_sha256: fc1b34676b13e8af071dd382f598bd9440997c00ae7ec305f8b0efdfd3d47f25
+  checksums_sha256: 577cd4d81fc5591a64e64741878a04a37cb0e384ef08a9e706d53a473f63751a
+  table_sha256: 51eec17250d207ecf4911b13f782963a7a15b817593a56ba96d6a57f2344b1a6
+  row_basis_source: README.md
+  readme_sha256: 55b44725995907481e8bb47cccd19d912f16c045837b3290c5898d45532d5411
+row_positions:
+  kind: positional
+  base: 0
+  order: raw_csv_data_rows_after_header_no_filtering
+source_label_mapping:
+  rita: local
+  canonical: pmlb
+datasets:
+- dataset_id: pmlb_saheart
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: saheart.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 462
+  n_features: 9
+  n_classes: 2
+  fingerprint: 4dec0d1a9a62519922240607c51d5edf6f74371d3725186eb87502f7a0f8c6b7
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: ecb06138db1c4ea62d9aa7b5f8dd5f72ac71ab0f9f15b1037d95bc4725c927a9
+  rita_fingerprint_version: 2
+  categorical_columns:
+  - Famhist
+  split_sizes:
+    train: 276
+    validation: 93
+    test: 93
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_saheart/holdout_0.json
+  shared_manifest_sha256: 087e8d781b318621d406a8ddb31e0f117c008e7514df1aded1ab01a88a0eff76
+  rita_manifest_path: splits/pmlb_saheart/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_saheart
+    name: saheart
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: saheart
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/saheart
+    file:
+      name: saheart.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 4dec0d1a9a62519922240607c51d5edf6f74371d3725186eb87502f7a0f8c6b7
+    problem:
+      type: binary
+    categorical_columns:
+    - Famhist
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: saheart
+      original_path: data/PMLB/saheart.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://rdrr.io/cran/ElemStatLearn/man/SAheart.html
+      origin_group: pmlb_saheart
+      unknown_categories: {}
+- dataset_id: pmlb_tic_tac_toe
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: tic_tac_toe.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 958
+  n_features: 9
+  n_classes: 2
+  fingerprint: 233e81861151be8efd2ec19c677aae9dfdec3696d52dd5ef2d62838ec5119f07
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: b4cb097d43b5c632fdc92b033e0d26e347f765cd629f8de80adb635e06aca172
+  rita_fingerprint_version: 2
+  categorical_columns:
+  - t1
+  - t2
+  - t3
+  - t4
+  - t5
+  - t6
+  - t7
+  - t8
+  - t9
+  split_sizes:
+    train: 574
+    validation: 192
+    test: 192
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_tic_tac_toe/holdout_0.json
+  shared_manifest_sha256: 23353e781b943e8bda81d1a6fd5cc247e51f22450edce5ea05ba4d6e1749ab27
+  rita_manifest_path: splits/pmlb_tic_tac_toe/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_tic_tac_toe
+    name: tic_tac_toe
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: tic_tac_toe
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/tic_tac_toe
+    file:
+      name: tic_tac_toe.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 233e81861151be8efd2ec19c677aae9dfdec3696d52dd5ef2d62838ec5119f07
+    problem:
+      type: binary
+    categorical_columns:
+    - t1
+    - t2
+    - t3
+    - t4
+    - t5
+    - t6
+    - t7
+    - t8
+    - t9
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: tic_tac_toe
+      original_path: data/PMLB/tic_tac_toe.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://archive.ics.uci.edu/dataset/101/tic+tac+toe+endgame
+      origin_group: pmlb_tic_tac_toe
+      unknown_categories: {}
+- dataset_id: pmlb_kr_vs_kp
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: kr_vs_kp.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 3196
+  n_features: 36
+  n_classes: 2
+  fingerprint: ab37abd66c3b6e3dee49648a43c0e409ca1965fa997744ca4aa91ed0af345d07
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: 215a01db3df73fb51fb1d273802c4546930f023fddf8ad3b92898aa1f116333d
+  rita_fingerprint_version: 2
+  categorical_columns:
+  - c1
+  - c2
+  - c3
+  - c4
+  - c5
+  - c6
+  - c7
+  - c8
+  - c9
+  - c10
+  - c11
+  - c12
+  - c13
+  - c14
+  - c15
+  - c16
+  - c17
+  - c18
+  - c19
+  - c20
+  - c21
+  - c22
+  - c23
+  - c24
+  - c25
+  - c26
+  - c27
+  - c28
+  - c29
+  - c30
+  - c31
+  - c32
+  - c33
+  - c34
+  - c35
+  - c36
+  split_sizes:
+    train: 1917
+    validation: 639
+    test: 640
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_kr_vs_kp/holdout_0.json
+  shared_manifest_sha256: 85d6fc27e418ad85f04cc98b9fa10498bd5619f0bbdf0105f31b342b2f9545bd
+  rita_manifest_path: splits/pmlb_kr_vs_kp/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_kr_vs_kp
+    name: kr_vs_kp
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: kr_vs_kp
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/kr_vs_kp
+    file:
+      name: kr_vs_kp.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: ab37abd66c3b6e3dee49648a43c0e409ca1965fa997744ca4aa91ed0af345d07
+    problem:
+      type: binary
+    categorical_columns:
+    - c1
+    - c2
+    - c3
+    - c4
+    - c5
+    - c6
+    - c7
+    - c8
+    - c9
+    - c10
+    - c11
+    - c12
+    - c13
+    - c14
+    - c15
+    - c16
+    - c17
+    - c18
+    - c19
+    - c20
+    - c21
+    - c22
+    - c23
+    - c24
+    - c25
+    - c26
+    - c27
+    - c28
+    - c29
+    - c30
+    - c31
+    - c32
+    - c33
+    - c34
+    - c35
+    - c36
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: kr_vs_kp
+      original_path: data/PMLB/kr_vs_kp.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://archive.ics.uci.edu/dataset/22/chess+king+rook+vs+king+pawn
+      origin_group: pmlb_kr_vs_kp_chess
+      unknown_categories: {}
+- dataset_id: pmlb_mushroom
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: mushroom.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 8124
+  n_features: 22
+  n_classes: 2
+  fingerprint: 99b8ad897e555c5babe12c357a5d2261108ff816019fe56d3aae9fca09167a16
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: d98d684b05b56cf00e6a6605226f0ba3e71aef14b62c40260cf28a2beccc2ac1
+  rita_fingerprint_version: 2
+  categorical_columns:
+  - cap-shape
+  - cap-surface
+  - cap-color
+  - bruises?
+  - odor
+  - gill-attachment
+  - gill-spacing
+  - gill-size
+  - gill-color
+  - stalk-shape
+  - stalk-root
+  - stalk-surface-above-ring
+  - stalk-surface-below-ring
+  - stalk-color-above-ring
+  - stalk-color-below-ring
+  - veil-type
+  - veil-color
+  - ring-number
+  - ring-type
+  - spore-print-color
+  - population
+  - habitat
+  split_sizes:
+    train: 4874
+    validation: 1625
+    test: 1625
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_mushroom/holdout_0.json
+  shared_manifest_sha256: 67cd076d90e7da9ec77efefe665ee78c864cf3f9c3c79518d9a990279e20745c
+  rita_manifest_path: splits/pmlb_mushroom/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_mushroom
+    name: mushroom
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: mushroom
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/mushroom
+    file:
+      name: mushroom.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 99b8ad897e555c5babe12c357a5d2261108ff816019fe56d3aae9fca09167a16
+    problem:
+      type: binary
+    categorical_columns:
+    - cap-shape
+    - cap-surface
+    - cap-color
+    - bruises?
+    - odor
+    - gill-attachment
+    - gill-spacing
+    - gill-size
+    - gill-color
+    - stalk-shape
+    - stalk-root
+    - stalk-surface-above-ring
+    - stalk-surface-below-ring
+    - stalk-color-above-ring
+    - stalk-color-below-ring
+    - veil-type
+    - veil-color
+    - ring-number
+    - ring-type
+    - spore-print-color
+    - population
+    - habitat
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: mushroom
+      original_path: data/PMLB/mushroom.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://archive.ics.uci.edu/dataset/73/mushroom
+      origin_group: pmlb_mushroom_agaricus_lepiota
+      unknown_categories:
+        stalk-root:
+          value: 0
+          meaning: unknown
+          policy: preserve_as_category
+- dataset_id: pmlb_hill_valley_without_noise
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: Hill_Valley_without_noise.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 1212
+  n_features: 100
+  n_classes: 2
+  fingerprint: 0f6439d66eabb0db8e80dab4a95d239d44a8b3190175e15b92d42fc349594e07
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: f51921aca5a37a7ae2546dba1bce9776bf70b6b617f1a6fefe2fcccf04cdbbb2
+  rita_fingerprint_version: 2
+  categorical_columns: []
+  split_sizes:
+    train: 726
+    validation: 243
+    test: 243
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_hill_valley_without_noise/holdout_0.json
+  shared_manifest_sha256: b9e42dc29da87c985cfe2acbc66d4b40af6bf1b053abd1ba075b50ecbad0cd0e
+  rita_manifest_path: splits/pmlb_hill_valley_without_noise/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_hill_valley_without_noise
+    name: Hill_Valley_without_noise
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: Hill_Valley_without_noise
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/Hill_Valley_without_noise
+    file:
+      name: Hill_Valley_without_noise.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 0f6439d66eabb0db8e80dab4a95d239d44a8b3190175e15b92d42fc349594e07
+    problem:
+      type: binary
+    categorical_columns: []
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: Hill_Valley_without_noise
+      original_path: data/PMLB/Hill_Valley_without_noise.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://archive.ics.uci.edu/dataset/166/hill+valley
+      origin_group: pmlb_hill_valley
+      unknown_categories: {}
+- dataset_id: pmlb_twonorm
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: twonorm.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 7400
+  n_features: 20
+  n_classes: 2
+  fingerprint: 6e0baa44a10475fdeb7d0bed7ad7b08aa043ec0ae6ca62c82672f39fbc3c81a7
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: 47667b4c2c6a232dc3d598d737057dbe7770aabf0ab1b3db25fd7b56b8e6623c
+  rita_fingerprint_version: 2
+  categorical_columns: []
+  split_sizes:
+    train: 4440
+    validation: 1480
+    test: 1480
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_twonorm/holdout_0.json
+  shared_manifest_sha256: 03d6ed9368b3a25ff5f6a52be5b38fae0227bd9f46d9414446c3e6de2c47e887
+  rita_manifest_path: splits/pmlb_twonorm/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_twonorm
+    name: twonorm
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: twonorm
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/twonorm
+    file:
+      name: twonorm.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 6e0baa44a10475fdeb7d0bed7ad7b08aa043ec0ae6ca62c82672f39fbc3c81a7
+    problem:
+      type: binary
+    categorical_columns: []
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: twonorm
+      original_path: data/PMLB/twonorm.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://www.cs.toronto.edu/~delve/data/twonorm/desc.html
+      origin_group: pmlb_twonorm
+      unknown_categories: {}
+- dataset_id: pmlb_penguins
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: penguins.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 333
+  n_features: 7
+  n_classes: 3
+  fingerprint: f9989e6cf026364b44cc02426334c886f49c231d5229f83a849f670fb54ed40d
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: b70b269b2b15890a985e3a3991591714aa352a71d78120546cfde1d9c98cb536
+  rita_fingerprint_version: 2
+  categorical_columns:
+  - island
+  - sex
+  split_sizes:
+    train: 199
+    validation: 67
+    test: 67
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_penguins/holdout_0.json
+  shared_manifest_sha256: b5964b34bd290ea644c04476bba87b0538b47f34b76c3e11246dd8758a4f4872
+  rita_manifest_path: splits/pmlb_penguins/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_penguins
+    name: penguins
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: penguins
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/penguins
+    file:
+      name: penguins.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: f9989e6cf026364b44cc02426334c886f49c231d5229f83a849f670fb54ed40d
+    problem:
+      type: multiclass
+    categorical_columns:
+    - island
+    - sex
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: penguins
+      original_path: data/PMLB/penguins.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://allisonhorst.github.io/palmerpenguins/reference/penguins.html
+      origin_group: pmlb_penguins
+      unknown_categories: {}
+- dataset_id: pmlb_car_evaluation
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: car_evaluation.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 1728
+  n_features: 6
+  n_classes: 4
+  fingerprint: 95a92209c4bf63240e808749c4d610d19dc6de0c20305b932eec7dadbbd52b0b
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: 4ffca8225ba5ded67c1f99c8f7e6277bb5d006cb525ec72138f3ac550f51d0ec
+  rita_fingerprint_version: 2
+  categorical_columns:
+  - buying_price
+  - maintenance_costs
+  - doors
+  - seats
+  - luggage_boot
+  - safety
+  split_sizes:
+    train: 1036
+    validation: 346
+    test: 346
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_car_evaluation/holdout_0.json
+  shared_manifest_sha256: 8a0e8ec7a5ba9e5557b3e93788cae0b759484209d570d774f02aaa26f91ad8f4
+  rita_manifest_path: splits/pmlb_car_evaluation/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_car_evaluation
+    name: car_evaluation
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: car_evaluation
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/car_evaluation
+    file:
+      name: car_evaluation.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 95a92209c4bf63240e808749c4d610d19dc6de0c20305b932eec7dadbbd52b0b
+    problem:
+      type: multiclass
+    categorical_columns:
+    - buying_price
+    - maintenance_costs
+    - doors
+    - seats
+    - luggage_boot
+    - safety
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: car_evaluation
+      original_path: data/PMLB/car_evaluation.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://archive.ics.uci.edu/dataset/19/car+evaluation
+      origin_group: pmlb_car_evaluation
+      unknown_categories: {}
+- dataset_id: pmlb_vehicle
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: vehicle.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 846
+  n_features: 18
+  n_classes: 4
+  fingerprint: 6f9bf82f4c27f90aba20bed16b71caaf91dd1a6443d3a8fbe6483706fd49ce02
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: c81730b2c543857c702f8e10805635caa3cdee54b5c4a2eb455f43c2a1271dc9
+  rita_fingerprint_version: 2
+  categorical_columns: []
+  split_sizes:
+    train: 507
+    validation: 169
+    test: 170
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_vehicle/holdout_0.json
+  shared_manifest_sha256: ced468040be0074f3a238cc1a2882ea9033c8dc31509a4f9d107c664bfb60a74
+  rita_manifest_path: splits/pmlb_vehicle/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_vehicle
+    name: vehicle
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: vehicle
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/vehicle
+    file:
+      name: vehicle.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 6f9bf82f4c27f90aba20bed16b71caaf91dd1a6443d3a8fbe6483706fd49ce02
+    problem:
+      type: multiclass
+    categorical_columns: []
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: vehicle
+      original_path: data/PMLB/vehicle.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://archive.ics.uci.edu/dataset/149/statlog+vehicle+silhouettes
+      origin_group: pmlb_vehicle
+      unknown_categories: {}
+- dataset_id: pmlb_waveform_21
+  dataset_source: pmlb
+  rita_dataset_source: local
+  file: waveform_21.csv
+  target: target
+  split_id: holdout_0
+  seed: 42
+  second_stage_seed: 43
+  n_rows: 5000
+  n_features: 21
+  n_classes: 3
+  fingerprint: 3baf536f849c7031c7076484b7c7e5bae7331dd29d82ab97a6e44a7ee4197703
+  fingerprint_method: sha256_raw_csv_bytes
+  rita_fingerprint_present: true
+  rita_dataset_fingerprint: 7b2015b1087cb2fa2feb2cd750ec1a83d905b488accad0aada2aba447ebe8054
+  rita_fingerprint_version: 2
+  categorical_columns: []
+  split_sizes:
+    train: 3000
+    validation: 1000
+    test: 1000
+  protocol_hash: d34dedae75071b7a2a869f0cd5333cd4560dc380d0f0d101b171bff675a5b8cf
+  shared_manifest: pmlb_waveform_21/holdout_0.json
+  shared_manifest_sha256: 563657d73c7d23c3637f4c013deab218d1f6ca7d2d6c83c7fae9620ee65abe41
+  rita_manifest_path: splits/pmlb_waveform_21/holdout_0.json
+  rita_metadata:
+    dataset_id: pmlb_waveform_21
+    name: waveform_21
+    task_type: classification
+    target: target
+    source:
+      type: pmlb
+      external_id: waveform_21
+      url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/waveform_21
+    file:
+      name: waveform_21.csv
+      format: csv
+      separator: ','
+      encoding: utf-8
+      sha256: 3baf536f849c7031c7076484b7c7e5bae7331dd29d82ab97a6e44a7ee4197703
+    problem:
+      type: multiclass
+    categorical_columns: []
+    notes: Explicit pilot typing; ordinal factors use categorical representation.
+      Original CSV bytes and unknown-category codes are preserved.
+    provenance:
+      original_name: waveform_21
+      original_path: data/PMLB/waveform_21.csv
+      selection_report: docs/PMLB_PILOT_SELECTION.md
+      metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+      description_url: https://www.openml.org/d/4551
+      origin_group: pmlb_waveform
+      unknown_categories: {}
