@@ -1,0 +1,122 @@
+schema_version: 1
+selection_report: docs/PMLB_PILOT_SELECTION.md
+metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+# Exact local CSV bytes approved in the selection report; no automatic discovery.
+datasets:
+  - original_name: saheart
+    dataset_id: pmlb_saheart
+    sha256: 4dec0d1a9a62519922240607c51d5edf6f74371d3725186eb87502f7a0f8c6b7
+    n_rows: 462
+    n_features: 9
+    n_classes: 2
+    categorical_columns: [Famhist]
+    origin_group: pmlb_saheart
+    description_url: https://rdrr.io/cran/ElemStatLearn/man/SAheart.html
+  - original_name: tic_tac_toe
+    dataset_id: pmlb_tic_tac_toe
+    sha256: 233e81861151be8efd2ec19c677aae9dfdec3696d52dd5ef2d62838ec5119f07
+    n_rows: 958
+    n_features: 9
+    n_classes: 2
+    categorical_columns: [t1, t2, t3, t4, t5, t6, t7, t8, t9]
+    origin_group: pmlb_tic_tac_toe
+    description_url: https://archive.ics.uci.edu/dataset/101/tic+tac+toe+endgame
+  - original_name: kr_vs_kp
+    dataset_id: pmlb_kr_vs_kp
+    sha256: ab37abd66c3b6e3dee49648a43c0e409ca1965fa997744ca4aa91ed0af345d07
+    n_rows: 3196
+    n_features: 36
+    n_classes: 2
+    categorical_columns:
+      [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12,
+       c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24,
+       c25, c26, c27, c28, c29, c30, c31, c32, c33, c34, c35, c36]
+    origin_group: pmlb_kr_vs_kp_chess
+    description_url: https://archive.ics.uci.edu/dataset/22/chess+king+rook+vs+king+pawn
+  - original_name: mushroom
+    dataset_id: pmlb_mushroom
+    sha256: 99b8ad897e555c5babe12c357a5d2261108ff816019fe56d3aae9fca09167a16
+    n_rows: 8124
+    n_features: 22
+    n_classes: 2
+    categorical_columns:
+      - cap-shape
+      - cap-surface
+      - cap-color
+      - bruises?
+      - odor
+      - gill-attachment
+      - gill-spacing
+      - gill-size
+      - gill-color
+      - stalk-shape
+      - stalk-root
+      - stalk-surface-above-ring
+      - stalk-surface-below-ring
+      - stalk-color-above-ring
+      - stalk-color-below-ring
+      - veil-type
+      - veil-color
+      - ring-number
+      - ring-type
+      - spore-print-color
+      - population
+      - habitat
+    unknown_categories:
+      stalk-root: {value: 0, meaning: unknown, policy: preserve_as_category}
+    origin_group: pmlb_mushroom_agaricus_lepiota
+    description_url: https://archive.ics.uci.edu/dataset/73/mushroom
+  - original_name: Hill_Valley_without_noise
+    dataset_id: pmlb_hill_valley_without_noise
+    sha256: 0f6439d66eabb0db8e80dab4a95d239d44a8b3190175e15b92d42fc349594e07
+    n_rows: 1212
+    n_features: 100
+    n_classes: 2
+    categorical_columns: []
+    origin_group: pmlb_hill_valley
+    description_url: https://archive.ics.uci.edu/dataset/166/hill+valley
+  - original_name: twonorm
+    dataset_id: pmlb_twonorm
+    sha256: 6e0baa44a10475fdeb7d0bed7ad7b08aa043ec0ae6ca62c82672f39fbc3c81a7
+    n_rows: 7400
+    n_features: 20
+    n_classes: 2
+    categorical_columns: []
+    origin_group: pmlb_twonorm
+    description_url: https://www.cs.toronto.edu/~delve/data/twonorm/desc.html
+  - original_name: penguins
+    dataset_id: pmlb_penguins
+    sha256: f9989e6cf026364b44cc02426334c886f49c231d5229f83a849f670fb54ed40d
+    n_rows: 333
+    n_features: 7
+    n_classes: 3
+    categorical_columns: [island, sex]
+    origin_group: pmlb_penguins
+    description_url: https://allisonhorst.github.io/palmerpenguins/reference/penguins.html
+  - original_name: car_evaluation
+    dataset_id: pmlb_car_evaluation
+    sha256: 95a92209c4bf63240e808749c4d610d19dc6de0c20305b932eec7dadbbd52b0b
+    n_rows: 1728
+    n_features: 6
+    n_classes: 4
+    categorical_columns: [buying_price, maintenance_costs, doors, seats, luggage_boot, safety]
+    origin_group: pmlb_car_evaluation
+    description_url: https://archive.ics.uci.edu/dataset/19/car+evaluation
+  - original_name: vehicle
+    dataset_id: pmlb_vehicle
+    sha256: 6f9bf82f4c27f90aba20bed16b71caaf91dd1a6443d3a8fbe6483706fd49ce02
+    n_rows: 846
+    n_features: 18
+    n_classes: 4
+    categorical_columns: []
+    origin_group: pmlb_vehicle
+    description_url: https://archive.ics.uci.edu/dataset/149/statlog+vehicle+silhouettes
+  - original_name: waveform_21
+    dataset_id: pmlb_waveform_21
+    sha256: 3baf536f849c7031c7076484b7c7e5bae7331dd29d82ab97a6e44a7ee4197703
+    n_rows: 5000
+    n_features: 21
+    n_classes: 3
+    categorical_columns: []
+    origin_group: pmlb_waveform
+    description_url: https://www.openml.org/d/4551

@@ -1,0 +1,53 @@
+dataset_id: pmlb_mushroom
+name: mushroom
+task_type: classification
+target: target
+source:
+  type: pmlb
+  external_id: mushroom
+  url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/mushroom
+file:
+  name: mushroom.csv
+  format: csv
+  separator: ','
+  encoding: utf-8
+  sha256: 99b8ad897e555c5babe12c357a5d2261108ff816019fe56d3aae9fca09167a16
+problem:
+  type: binary
+categorical_columns:
+- cap-shape
+- cap-surface
+- cap-color
+- bruises?
+- odor
+- gill-attachment
+- gill-spacing
+- gill-size
+- gill-color
+- stalk-shape
+- stalk-root
+- stalk-surface-above-ring
+- stalk-surface-below-ring
+- stalk-color-above-ring
+- stalk-color-below-ring
+- veil-type
+- veil-color
+- ring-number
+- ring-type
+- spore-print-color
+- population
+- habitat
+notes: Explicit pilot typing; ordinal factors use categorical representation. Original
+  CSV bytes and unknown-category codes are preserved.
+provenance:
+  original_name: mushroom
+  original_path: data/PMLB/mushroom.csv
+  selection_report: docs/PMLB_PILOT_SELECTION.md
+  metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+  description_url: https://archive.ics.uci.edu/dataset/73/mushroom
+  origin_group: pmlb_mushroom_agaricus_lepiota
+  unknown_categories:
+    stalk-root:
+      value: 0
+      meaning: unknown
+      policy: preserve_as_category

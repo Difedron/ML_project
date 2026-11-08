@@ -1,0 +1,33 @@
+dataset_id: pmlb_car_evaluation
+name: car_evaluation
+task_type: classification
+target: target
+source:
+  type: pmlb
+  external_id: car_evaluation
+  url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/car_evaluation
+file:
+  name: car_evaluation.csv
+  format: csv
+  separator: ','
+  encoding: utf-8
+  sha256: 95a92209c4bf63240e808749c4d610d19dc6de0c20305b932eec7dadbbd52b0b
+problem:
+  type: multiclass
+categorical_columns:
+- buying_price
+- maintenance_costs
+- doors
+- seats
+- luggage_boot
+- safety
+notes: Explicit pilot typing; ordinal factors use categorical representation. Original
+  CSV bytes and unknown-category codes are preserved.
+provenance:
+  original_name: car_evaluation
+  original_path: data/PMLB/car_evaluation.csv
+  selection_report: docs/PMLB_PILOT_SELECTION.md
+  metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+  description_url: https://archive.ics.uci.edu/dataset/19/car+evaluation
+  origin_group: pmlb_car_evaluation
+  unknown_categories: {}

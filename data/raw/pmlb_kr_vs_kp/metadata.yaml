@@ -1,0 +1,63 @@
+dataset_id: pmlb_kr_vs_kp
+name: kr_vs_kp
+task_type: classification
+target: target
+source:
+  type: pmlb
+  external_id: kr_vs_kp
+  url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/kr_vs_kp
+file:
+  name: kr_vs_kp.csv
+  format: csv
+  separator: ','
+  encoding: utf-8
+  sha256: ab37abd66c3b6e3dee49648a43c0e409ca1965fa997744ca4aa91ed0af345d07
+problem:
+  type: binary
+categorical_columns:
+- c1
+- c2
+- c3
+- c4
+- c5
+- c6
+- c7
+- c8
+- c9
+- c10
+- c11
+- c12
+- c13
+- c14
+- c15
+- c16
+- c17
+- c18
+- c19
+- c20
+- c21
+- c22
+- c23
+- c24
+- c25
+- c26
+- c27
+- c28
+- c29
+- c30
+- c31
+- c32
+- c33
+- c34
+- c35
+- c36
+notes: Explicit pilot typing; ordinal factors use categorical representation. Original
+  CSV bytes and unknown-category codes are preserved.
+provenance:
+  original_name: kr_vs_kp
+  original_path: data/PMLB/kr_vs_kp.csv
+  selection_report: docs/PMLB_PILOT_SELECTION.md
+  metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+  description_url: https://archive.ics.uci.edu/dataset/22/chess+king+rook+vs+king+pawn
+  origin_group: pmlb_kr_vs_kp_chess
+  unknown_categories: {}

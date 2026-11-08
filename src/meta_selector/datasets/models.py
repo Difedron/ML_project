@@ -25,6 +25,7 @@ class FileMetadata:
     separator: str = ","
     encoding: str = "utf-8"
     sheet_name: str | int | None = None
+    sha256: str | None = None
 
 
 @dataclass(frozen=True)
@@ -42,6 +43,7 @@ class DatasetMetadata:
     file: FileMetadata
     problem: ProblemMetadata
     notes: str = ""
+    categorical_columns: tuple[str, ...] = ()
 
 
 @dataclass

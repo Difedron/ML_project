@@ -1,7 +1,7 @@
 """Explicit Table-3 comparisons; coverage restrictions are recorded, never implicit."""
 from dataclasses import dataclass
 from .families import (Family, MLP, TREE, NON_TFM, TFM, TABICL_V1, TABICL_V2,
-                       TABPFN_V2, TABPFN_2_6, REALTABPFN_V2_5)
+                       TABPFN_V2, TABPFN_2_6, REALTABPFN_V2_5, LIGHTGBM, LIGHTGBM_PRIORTUNE_K25)
 
 
 @dataclass(frozen=True)
@@ -20,6 +20,16 @@ COMPARISONS = {item.id: item for item in (
     Comparison("realtabpfn_v2_5_vs_tabpfn_2_6", "C4", REALTABPFN_V2_5, TABPFN_2_6, "complete_datasets"),
     Comparison("tabpfn_v2_vs_tabpfn_2_6", "C5", TABPFN_V2, TABPFN_2_6, "complete_datasets"),
     Comparison("tabicl_v1_vs_tabicl_v2", "C6", TABICL_V1, TABICL_V2, "complete_datasets"),
+)}
+
+# Keep Table-3 definitions and --all semantics unchanged for the TabArena backend.
+PMLB_COMPARISONS = {item.id: item for item in (
+    Comparison("tabicl_v2_vs_tabpfn_2_6", "P1", TABICL_V2, TABPFN_2_6),
+    Comparison("lightgbm_vs_tabpfn_2_6", "P2", LIGHTGBM, TABPFN_2_6),
+    Comparison("lightgbm_priortune_k25_vs_tabpfn_2_6", "P3", LIGHTGBM_PRIORTUNE_K25, TABPFN_2_6),
+    Comparison("lightgbm_vs_tabicl_v2", "P4", LIGHTGBM, TABICL_V2),
+    Comparison("lightgbm_priortune_k25_vs_tabicl_v2", "P5", LIGHTGBM_PRIORTUNE_K25, TABICL_V2),
+    Comparison("lightgbm_vs_lightgbm_priortune_k25", "P6", LIGHTGBM, LIGHTGBM_PRIORTUNE_K25),
 )}
 
 

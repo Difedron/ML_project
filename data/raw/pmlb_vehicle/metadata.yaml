@@ -1,0 +1,27 @@
+dataset_id: pmlb_vehicle
+name: vehicle
+task_type: classification
+target: target
+source:
+  type: pmlb
+  external_id: vehicle
+  url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/vehicle
+file:
+  name: vehicle.csv
+  format: csv
+  separator: ','
+  encoding: utf-8
+  sha256: 6f9bf82f4c27f90aba20bed16b71caaf91dd1a6443d3a8fbe6483706fd49ce02
+problem:
+  type: multiclass
+categorical_columns: []
+notes: Explicit pilot typing; ordinal factors use categorical representation. Original
+  CSV bytes and unknown-category codes are preserved.
+provenance:
+  original_name: vehicle
+  original_path: data/PMLB/vehicle.csv
+  selection_report: docs/PMLB_PILOT_SELECTION.md
+  metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+  description_url: https://archive.ics.uci.edu/dataset/149/statlog+vehicle+silhouettes
+  origin_group: pmlb_vehicle
+  unknown_categories: {}

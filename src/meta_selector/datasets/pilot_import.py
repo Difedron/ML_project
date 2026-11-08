@@ -33,7 +33,7 @@ def safe_extract_bundle(archive, cache_root):
                  "Bundle exceeds safe extraction limits")
         names = set()
         for entry in entries:
-            name = entry.filename
+            name = entry.orig_filename
             parts = PurePosixPath(name)
             _require(name and not parts.is_absolute() and ".." not in parts.parts and "\\" not in name
                      and all(":" not in part for part in parts.parts), "Unsafe archive path")

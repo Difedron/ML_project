@@ -1,4 +1,8 @@
 data/PMLB/*.csv filter=lfs diff=lfs merge=lfs -text
 
-# Keep Rita's shared JSON bytes stable across platforms; ordinary text diffs still work.
+# Rita: preserve original dataset and split bytes
+data/splits/pmlb_*/holdout_0.json -text whitespace=cr-at-eol
+data/raw/pmlb_*/*.csv -text
+
+# Diana: preserve shared pilot split bytes
 config/pilot_splits/** -text whitespace=cr-at-eol

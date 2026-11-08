@@ -1,0 +1,28 @@
+dataset_id: pmlb_saheart
+name: saheart
+task_type: classification
+target: target
+source:
+  type: pmlb
+  external_id: saheart
+  url: https://github.com/EpistasisLab/pmlb/tree/7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68/datasets/saheart
+file:
+  name: saheart.csv
+  format: csv
+  separator: ','
+  encoding: utf-8
+  sha256: 4dec0d1a9a62519922240607c51d5edf6f74371d3725186eb87502f7a0f8c6b7
+problem:
+  type: binary
+categorical_columns:
+- Famhist
+notes: Explicit pilot typing; ordinal factors use categorical representation. Original
+  CSV bytes and unknown-category codes are preserved.
+provenance:
+  original_name: saheart
+  original_path: data/PMLB/saheart.csv
+  selection_report: docs/PMLB_PILOT_SELECTION.md
+  metadata_revision: 7c1f4bdc00136dc2e55c87fa6b8ba6e8af6d1a68
+  description_url: https://rdrr.io/cran/ElemStatLearn/man/SAheart.html
+  origin_group: pmlb_saheart
+  unknown_categories: {}

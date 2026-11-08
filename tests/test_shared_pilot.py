@@ -268,7 +268,10 @@ def test_import_does_not_overwrite_modified_shared_contract(pilot):
 def test_unsafe_zip_paths_are_rejected(tmp_path, name):
     archive = tmp_path / "unsafe.zip"
     with ZipFile(archive, "w") as package:
-        package.writestr(name, b"unsafe")
+        from zipfile import ZipInfo
+        info = ZipInfo("placeholder")
+        info.filename = name
+        package.writestr(info, b"unsafe")
     with pytest.raises(PilotContractError, match="Unsafe archive"):
         safe_extract_bundle(archive, tmp_path / "cache")
 
