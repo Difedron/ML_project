@@ -1,0 +1,18 @@
+schema_version: 1
+device: auto
+resources_config: config/candidates/preflight.yaml
+baseline_config: config/candidates/lightgbm_baseline.yaml
+package_versions:
+  tabpfn: '9.2.0'
+  tabicl: '2.2.0'
+  lightgbm: '4.7.0'
+checkpoint_paths:
+  tabpfn: checkpoints/tabpfn/tabpfn-v2.6-classifier-v2.6_default.ckpt
+  tabicl: checkpoints/tabicl/tabicl-classifier-v2-20260212.ckpt
+tabpfn_params:
+  n_jobs: 1
+  show_progress_bar: false
+tabicl_params:
+  n_estimators: 8
+  n_jobs: 1
+  verbose: false

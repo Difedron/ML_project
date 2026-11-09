@@ -10,11 +10,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import balanced_accuracy_score, f1_score, log_loss, roc_auc_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.pipeline import Pipeline
 
 from meta_selector.artifacts import config_hash, environment
+from meta_selector.metrics import classification_score
 from .preprocessing import make_preprocessor
 
 MODEL_CLASSES = {"logistic_regression": LogisticRegression, "decision_tree": DecisionTreeClassifier,
@@ -22,20 +22,6 @@ MODEL_CLASSES = {"logistic_regression": LogisticRegression, "decision_tree": Dec
 CUSTOM_LANDMARKER_MODELS = tuple(MODEL_CLASSES)
 CUSTOM_FEATURE_NAMES = tuple(f"{name}_balanced_accuracy_{summary}" for name in MODEL_CLASSES
                              for summary in ("mean", "std"))
-
-
-def classification_score(model, X, y, metric, classes):
-    if metric == "balanced_accuracy":
-        return float(balanced_accuracy_score(y, model.predict(X)))
-    if metric == "macro_f1":
-        return float(f1_score(y, model.predict(X), average="macro", zero_division=0))
-    probabilities = model.predict_proba(X)
-    if metric == "log_loss":
-        return float(log_loss(y, probabilities, labels=classes))
-    if metric == "roc_auc":
-        return float(roc_auc_score(y, probabilities[:, 1] if len(classes) == 2 else probabilities,
-                                   labels=classes, multi_class="ovr", average="macro"))
-    raise ValueError(f"Unknown classification metric: {metric}")
 
 
 def make_landmarker(name, X_train, config):

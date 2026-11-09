@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 
 from meta_selector.artifacts import config_hash, environment
-from meta_selector.landmarkers.custom import classification_score
+from meta_selector.metrics import classification_score
 from meta_selector.tabarena.model_mapping import MODELS
 
 HISTORICAL_REQUIREMENTS = {
@@ -43,10 +43,39 @@ class CandidateResult:
     status: str = "unavailable"
     error_message: str = ""
     provenance: dict = field(default_factory=dict)
+    # Schema 2 is additive: legacy arguments, fields and score-to-gap consumers remain valid.
+    schema_version: int = 2
+    seed: int | None = None
+    model_family: str = ""
+    variant: str = ""
+    checkpoint_version: str | None = None
+    balanced_accuracy: float = np.nan
+    roc_auc: float = np.nan
+    log_loss: float = np.nan
+    model_init_time_sec: float = np.nan
+    fit_time_sec: float = np.nan
+    validation_time_sec: float = np.nan
+    tuning_time_sec: float = np.nan
+    predict_time_sec: float = np.nan
+    total_time_sec: float = np.nan
+    n_train: int | None = None
+    n_validation: int | None = None
+    n_test: int | None = None
+    n_features: int | None = None
+    n_classes: int | None = None
+    device: str | None = None
+    python_version: str | None = None
+    package_versions: dict = field(default_factory=dict)
+    error_type: str = ""
 
     def to_record(self):
         row = asdict(self)
         row["provenance"] = json.dumps(row["provenance"], sort_keys=True)
+        row["package_versions"] = json.dumps(row["package_versions"], sort_keys=True)
+        # Old runners still assign the historical names after construction.
+        for modern, legacy in (("fit_time_sec", "fit_time"), ("predict_time_sec", "predict_time")):
+            if np.isnan(row[modern]):
+                row[modern] = row[legacy]
         return row
 
 
