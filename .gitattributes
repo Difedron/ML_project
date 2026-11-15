@@ -6,3 +6,4 @@ data/raw/pmlb_*/*.csv -text
 
 # Diana: preserve shared pilot split bytes
 config/pilot_splits/** -text whitespace=cr-at-eol
+results/exports/pmlb_pilot_meta_features/** -text
