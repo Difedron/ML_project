@@ -1,10 +1,11 @@
-"""Shared subprocess execution for the SAheart smoke test and stage-6 mini-pilot."""
+"""Shared subprocess execution for the candidate pilots."""
 import argparse
 import json
 import logging
 import math
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -35,7 +36,7 @@ def load_contract(dataset_id, expected):
     return dataset, split
 
 
-def worker(dataset_id, expected, model_id, result_path):
+def worker(dataset_id, expected, model_id, result_path, *, protocol_id=None):
     from meta_selector.artifacts import atomic_json
     from meta_selector.candidates import PilotCandidateRunner
 
@@ -46,7 +47,7 @@ def worker(dataset_id, expected, model_id, result_path):
     dataset, split = load_contract(dataset_id, expected)
     print(f"Verified {split.join_key}: {expected}, categories={dataset.categorical_columns}", flush=True)
 
-    result = PilotCandidateRunner(device="auto").run_shared(model_id, dataset, split)
+    result = PilotCandidateRunner(device="auto").run_shared(model_id, dataset, split, trial_protocol_id=protocol_id)
     record = result.to_record()
     record = {key: None if isinstance(value, float) and not math.isfinite(value) else value
               for key, value in record.items()}
@@ -65,7 +66,7 @@ def worker_environment(output):
     return env
 
 
-def run_isolated(entrypoint, dataset_id, expected, model_id, output, *, explicit_dataset):
+def run_isolated(entrypoint, dataset_id, expected, model_id, output, *, explicit_dataset, protocol_id=None):
     from meta_selector.artifacts import environment
     from meta_selector.candidates import CandidateResult
 
@@ -79,6 +80,8 @@ def run_isolated(entrypoint, dataset_id, expected, model_id, output, *, explicit
         command = [sys.executable, str(entrypoint), "--model", model_id, "--worker-result", str(result_path)]
         if explicit_dataset:
             command.extend(("--dataset", dataset_id))
+        if protocol_id is not None:
+            command.extend(("--worker-protocol", protocol_id))
         try:
             process = subprocess.run(command, cwd=ROOT, env=worker_environment(output), stdout=log,
                                      stderr=subprocess.STDOUT, timeout=WORKER_TIMEOUT_SECONDS)
@@ -95,61 +98,96 @@ def run_isolated(entrypoint, dataset_id, expected, model_id, output, *, explicit
 
     versions = environment()
     metric = "roc_auc" if expected[2] == 2 else "log_loss"
+    diagnostic = log_path.read_text(encoding="utf-8", errors="replace")
+    pattern = rf"{re.escape(model_id)}: (input_validation|package_check|initialization|fit_train|score_validation|final_test|portfolio_check|validation_trials)\b"
+    stages = re.findall(pattern, diagnostic)
+    devices = re.findall(rf"{re.escape(model_id)} actual device: (cpu|mps|cuda)\b", diagnostic)
     return CandidateResult(**identity, model_version=model_version, exact_model_id="", validation_metric=metric,
                            test_metric=metric, status="error", error_type=error_type, error_message=message,
+                           device=devices[-1] if devices else None,
                            total_time_sec=perf_counter() - started, python_version=versions.pop("python"),
-                           package_versions=versions, provenance={"error_stage": "worker", "log": str(log_path)}).to_record()
+                           package_versions=versions, provenance={"error_stage": stages[-1] if stages else "worker",
+                                                                  "log": str(log_path)}).to_record()
 
 
-def run_cli(entrypoint, description, contracts, output_name, *, explicit_dataset, argv=None):
+def run_cli(entrypoint, description, contracts, output_name, *, explicit_dataset, argv=None, full_batch=None):
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--model", choices=MODELS, help="Repeat just this candidate")
     parser.add_argument("--worker-result", type=Path, help=argparse.SUPPRESS)
     if explicit_dataset:
         selection = parser.add_mutually_exclusive_group(required=True)
         selection.add_argument("--dataset", choices=contracts, help="Run or repeat one shared dataset")
-        selection.add_argument("--all", action="store_true", help="Run all three mini-pilot datasets in order")
+        selection.add_argument("--all", action="store_true", help="Run all fixed datasets in order")
+    if full_batch is not None:
+        parser.add_argument("--resume", action="store_true", help="Reuse only fully validated full-pilot rows")
+        parser.add_argument("--audit-only", action="store_true", help="Validate the saved full-pilot artifacts")
+        parser.add_argument("--worker-protocol", help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     dataset_id = args.dataset if explicit_dataset else next(iter(contracts))
     if args.worker_result is not None:
         if args.model is None or dataset_id is None:
             parser.error("worker requires a single dataset and --model")
-        worker(dataset_id, contracts[dataset_id], args.model, args.worker_result)
+        protocol_id = getattr(args, "worker_protocol", None)
+        if full_batch is not None and not re.fullmatch(r"[a-f0-9]{64}", protocol_id or ""):
+            parser.error("full-pilot worker requires a protocol ID")
+        worker(dataset_id, contracts[dataset_id], args.model, args.worker_result, protocol_id=protocol_id)
         return 0
     if dataset_id is None and args.model is not None:
         parser.error("--model requires a single dataset")
+    audit_only, resume = getattr(args, "audit_only", False), getattr(args, "resume", False)
+    if audit_only and (dataset_id is not None or resume):
+        parser.error("--audit-only requires --all and cannot be combined with --resume")
 
     datasets = (dataset_id,) if dataset_id is not None else tuple(contracts)
     models = (args.model,) if args.model else tuple(MODELS)
-    return run_batch(entrypoint, contracts, datasets, models, output_name, explicit_dataset=explicit_dataset)
+    return run_batch(entrypoint, contracts, datasets, models, output_name, explicit_dataset=explicit_dataset,
+                     full_batch=full_batch, resume=resume, audit_only=audit_only)
 
 
-def run_batch(entrypoint, contracts, datasets, models, output_name, *, explicit_dataset):
+def run_batch(entrypoint, contracts, datasets, models, output_name, *, explicit_dataset,
+              full_batch=None, resume=False, audit_only=False):
     import pandas as pd
     from meta_selector.artifacts import atomic_json, research_paths, upsert_table
     from meta_selector.datasets.shared_pilot import JOIN_KEYS
 
     started = perf_counter()
     # Validate every requested contract before spawning even the first model.
-    for dataset_id in datasets:
-        load_contract(dataset_id, contracts[dataset_id])
+    verified = {}
+    for dataset_id in (contracts if full_batch is not None else datasets):
+        verified[dataset_id] = load_contract(dataset_id, contracts[dataset_id])
         print(f"Verified {dataset_id}/{SPLIT}/{SEED}: {contracts[dataset_id]}", flush=True)
 
     output = research_paths(ROOT)["derived"] / output_name
     output.mkdir(parents=True, exist_ok=True)
+    batch = full_batch(ROOT, output, contracts, verified) if full_batch is not None else None
+    if audit_only:
+        return batch.audit()
+    if batch is not None:
+        batch.prepare()
     statuses = []
+    reused = 0
     for dataset_id in datasets:
         log_dir = output / dataset_id if explicit_dataset else output
         log_dir.mkdir(exist_ok=True)
         for model_id in models:
+            if batch is not None and resume and batch.can_resume(dataset_id, model_id):
+                print(f"Verified existing {dataset_id}/{model_id}", flush=True)
+                statuses.append("ok")
+                reused += 1
+                continue
             print(f"Running {dataset_id}/{model_id}", flush=True)
             record = run_isolated(entrypoint, dataset_id, contracts[dataset_id], model_id, log_dir,
-                                  explicit_dataset=explicit_dataset)
+                                  explicit_dataset=explicit_dataset, protocol_id=batch.protocol_id if batch else None)
+            if batch is not None:
+                record = batch.stamp(record, dataset_id, model_id)
             upsert_table(output / "candidate_results.parquet", pd.DataFrame([record]),
                          [*JOIN_KEYS, "model_family", "variant"])
             statuses.append(record["status"])
             print(f"Saved {dataset_id}/{model_id} ({record['status']}); log: {log_dir / (model_id + '.log')}", flush=True)
-    if explicit_dataset and len(datasets) == len(contracts) and len(models) == len(MODELS):
+    complete_scope = explicit_dataset and len(datasets) == len(contracts) and len(models) == len(MODELS)
+    if batch is not None and complete_scope:
+        return batch.audit(wall_clock_sec=perf_counter() - started, reused=reused)
+    if complete_scope:
         wall_clock = perf_counter() - started
         atomic_json(output / "run_summary.json", dict(datasets=list(datasets), models=list(models),
                     split_id=SPLIT, seed=SEED, attempts=len(statuses), successful=statuses.count("ok"),

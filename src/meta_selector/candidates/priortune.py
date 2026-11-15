@@ -185,11 +185,14 @@ def select_on_validation(configurations, train, y_train, validation, y_validatio
     return None if best is None else best[1:]
 
 
-def write_validation_trials(result, project_root):
+def write_validation_trials(result, project_root, *, protocol_id=None):
     """Upsert one complete batch, including failed trials, to the validation-only table."""
     derived = research_paths(project_root)["derived"]
     path = contained_path(derived, "priortune_validation/trials.parquet")
     rows = [{**trial, "effective_parameters": json.dumps(trial["effective_parameters"], sort_keys=True)}
             for trial in result.validation_trials]
+    if protocol_id is not None:
+        for row in rows:
+            row.update(full_pilot_protocol_id=protocol_id, exact_model_id=result.exact_model_id)
     upsert_table(path, pd.DataFrame(rows), list(TRIAL_KEYS))
     return path

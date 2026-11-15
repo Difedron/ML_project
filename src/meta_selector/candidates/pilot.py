@@ -219,6 +219,19 @@ class BaseCandidate:
     def _test_predictions(self, model, X, n_classes):
         return aligned_predictions(model, X, n_classes)
 
+    def exact_identity(self, params, checkpoint, package_version):
+        identity_params = {key: value for key, value in params.items() if key != "model_path"}
+        checkpoint_identity = {key: value for key, value in checkpoint.items() if key != "path"} if checkpoint else None
+        return f"pilot::{self.model_id}::{config_hash(dict(model_family=self.model_family, variant=self.variant,
+            params=identity_params, checkpoint=checkpoint_identity, package_version=package_version))}"
+
+    def expected_identity(self, dataset, device, package_version):
+        """Calculate the identity before fitting, using the same resolved parameters as run()."""
+        result = CandidateResult(dataset.dataset_id, dataset.split_id, self.model_id, self.model_version,
+                                 "", "", "", n_classes=dataset.y.nunique(), device=device)
+        params = self._params(dataset.seed, dataset.X, dataset.categorical_columns, result)
+        return self.exact_identity(params, result.provenance.get("checkpoint"), package_version)
+
     def _evaluate_test(self, result, model, features, test_data):
         _stage(result, "final_test")
         started = self.clock()
@@ -241,12 +254,8 @@ class BaseCandidate:
         LOGGER.debug("%s actual device: %s", self.model_id, result.device)
         params = self._params(result.seed, X_train, categorical_columns, result)
         result.provenance["model_params"] = params
-        identity_params = {key: value for key, value in params.items() if key != "model_path"}
-        checkpoint = result.provenance.get("checkpoint")
-        checkpoint_identity = {key: value for key, value in checkpoint.items() if key != "path"} if checkpoint else None
-        result.exact_model_id = f"pilot::{self.model_id}::{config_hash(dict(
-            model_family=self.model_family, variant=self.variant, params=identity_params,
-            checkpoint=checkpoint_identity, package_version=result.package_versions[self.model_family]))}"
+        result.exact_model_id = self.exact_identity(params, result.provenance.get("checkpoint"),
+                                                    result.package_versions[self.model_family])
         try:
             model = self.estimator_factory(self.model_family, params)
         finally:
@@ -376,6 +385,11 @@ class LightGBMPriorTuneCandidate(BaseCandidate):
 
     defer_test = True
 
+    def expected_identity(self, dataset, device, package_version):
+        portfolio = {"portfolio_id": priortune.PORTFOLIO_ID, **priortune.PORTFOLIO_PIN}
+        return f"pilot::{self.model_id}::{config_hash(dict(portfolio=portfolio,
+            training_policy=priortune.TRAINING_POLICY, package_version=package_version))}"
+
     def _selection_metric(self, n_classes, requested):
         return priortune.selection_rule(n_classes)[0]
 
@@ -396,9 +410,7 @@ class LightGBMPriorTuneCandidate(BaseCandidate):
                          tie_break_rule="smallest_config_id", failure_policy="require_all_25",
                          training_policy=priortune.TRAINING_POLICY.copy())
         result.provenance["priortune"] = selection
-        result.exact_model_id = f"pilot::{self.model_id}::{config_hash(dict(
-            portfolio=selection['portfolio'], training_policy=selection['training_policy'],
-            package_version=result.package_versions[self.model_family]))}"
+        result.exact_model_id = self.expected_identity(None, result.device, result.package_versions[self.model_family])
         path = contained_path(self.root, spec.get("cache_path"))
         configurations = priortune.load_portfolio(path, spec)
         features = TrainOnlyFeatures(categorical_columns, self.model_family, string_categories=True)
@@ -448,7 +460,7 @@ class PilotCandidateRunner:
             raise ValueError(f"Unknown pilot model: {model_id}")
         return self.candidates[model_id].run(model_id, *portions, **context)
 
-    def run_shared(self, model_id, dataset, split, *, metric=None):
+    def run_shared(self, model_id, dataset, split, *, metric=None, trial_protocol_id=None):
         """Consume stage-2 objects and persist PriorTune's validation trials when available."""
         if dataset.dataset_source != "pmlb" or split.dataset_source != "pmlb":
             raise ValueError("Expected the canonical PMLB shared contract")
@@ -471,6 +483,6 @@ class PilotCandidateRunner:
             rita_dataset_fingerprint=split.rita_dataset_fingerprint,
             row_order=split.metadata["row_order"])
         if result.validation_trials:
-            path = priortune.write_validation_trials(result, candidate.root)
+            path = priortune.write_validation_trials(result, candidate.root, protocol_id=trial_protocol_id)
             result.provenance["validation_trials_artifact"] = str(path)
         return result
