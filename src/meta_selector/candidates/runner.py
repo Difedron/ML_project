@@ -1,5 +1,5 @@
 """Official TabArena model registry / AutoGluon executor, with no algorithm reimplementations."""
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 import hashlib
 import importlib.util
 import importlib.metadata
@@ -67,9 +67,10 @@ class CandidateResult:
     python_version: str | None = None
     package_versions: dict = field(default_factory=dict)
     error_type: str = ""
+    validation_trials: list[dict] = field(default_factory=list, repr=False)
 
     def to_record(self):
-        row = asdict(self)
+        row = {item.name: getattr(self, item.name) for item in fields(self) if item.name != "validation_trials"}
         row["provenance"] = json.dumps(row["provenance"], sort_keys=True)
         row["package_versions"] = json.dumps(row["package_versions"], sort_keys=True)
         # Old runners still assign the historical names after construction.

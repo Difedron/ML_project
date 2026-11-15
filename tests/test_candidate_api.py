@@ -154,16 +154,16 @@ def test_exact_official_constructor_parameters_and_seed(setup, wrapper_type):
             assert params[name] == 77
 
 
-def test_fourth_variant_is_api_only_without_any_portfolio_execution(setup):
+def test_fourth_variant_reports_missing_exact_resource_without_backend_execution(setup):
     events = []
     wrapper = LightGBMPriorTuneCandidate(**dependencies(setup, events=events))
     result = run(wrapper)
     assert result.model_family == "lightgbm" and result.variant == "priortune_t_k25"
-    assert result.status == "not_implemented" and result.error_type == "Stage4RequiredError"
-    assert result.device == "cpu" and result.provenance["portfolio_contract"]["k"] == 25
-    assert result.provenance["portfolio_contract"]["selection_data"] == "validation_only"
+    assert result.status == "error" and result.error_type == "PortfolioError"
+    assert result.device == "cpu" and result.provenance["priortune"]["number_of_configs"] == 25
+    assert "unavailable" in result.error_message
     assert events == [] and np.isnan(result.test_score)
-    assert wrapper.available_models() == []
+    assert wrapper.available_models() == [wrapper.model_id]
 
 
 @pytest.mark.parametrize("family", ["tabpfn", "tabicl"])
@@ -350,7 +350,7 @@ def test_shared_reader_boundary_uses_exact_positions_and_has_no_fallback(setup, 
     assert tuple(fit[1].index) == positions[0]
     assert result.provenance["shared_split"]["fingerprint"] == dataset.fingerprint
     assert result.seed == 77 and result.split_id == "rita"
-    assert len(runner.available_models()) == 3
+    assert len(runner.available_models()) == 4
     dataset.X.iloc[0, 0] = -99
     with pytest.raises(PilotContractError, match="modified"):
         runner.run_shared("lightgbm", dataset, split)
@@ -397,7 +397,7 @@ def test_import_and_constructor_never_import_models_or_landmarkers():
 import sys
 from meta_selector.candidates import PilotCandidateRunner
 runner = PilotCandidateRunner()
-assert len(runner.available_models()) == 3
+assert len(runner.available_models()) == 4
 for name in ('torch', 'tabpfn', 'tabicl', 'lightgbm', 'pymfe', 'meta_selector.landmarkers.custom'):
     assert name not in sys.modules, name
 """
