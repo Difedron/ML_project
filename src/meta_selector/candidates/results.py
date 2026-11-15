@@ -59,7 +59,8 @@ def validate_pmlb_candidate_results(scores, *, project_root=None):
     failures are reported, never silently excluded from the four-method reference.
     """
     scores = scores.copy().reset_index(drop=True)
-    required = {field.name for field in fields(CandidateResult)}
+    # Trial details live in their own PriorTune artifact, not in final score rows.
+    required = {field.name for field in fields(CandidateResult) if field.metadata.get("persist", True)}
     if scores.columns.has_duplicates:
         raise CandidateResultsValidationError(["Duplicate CandidateResult columns"])
     if not required <= set(scores):

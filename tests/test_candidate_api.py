@@ -432,5 +432,6 @@ assert len(runner.available_models()) == 4
 for name in ('torch', 'tabpfn', 'tabicl', 'lightgbm', 'pymfe', 'meta_selector.landmarkers.custom'):
     assert name not in sys.modules, name
 """
-    result = subprocess.run([sys.executable, "-c", code], cwd=DEFAULT_PROJECT_ROOT, capture_output=True, text=True)
+    # Isolated mode proves the package is installed, independently of pytest's pythonpath.
+    result = subprocess.run([sys.executable, "-I", "-c", code], cwd=DEFAULT_PROJECT_ROOT, capture_output=True, text=True)
     assert result.returncode == 0, result.stderr

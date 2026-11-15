@@ -67,10 +67,10 @@ class CandidateResult:
     python_version: str | None = None
     package_versions: dict = field(default_factory=dict)
     error_type: str = ""
-    validation_trials: list[dict] = field(default_factory=list, repr=False)
+    validation_trials: list[dict] = field(default_factory=list, repr=False, metadata={"persist": False})
 
     def to_record(self):
-        row = {item.name: getattr(self, item.name) for item in fields(self) if item.name != "validation_trials"}
+        row = {item.name: getattr(self, item.name) for item in fields(self) if item.metadata.get("persist", True)}
         row["provenance"] = json.dumps(row["provenance"], sort_keys=True)
         row["package_versions"] = json.dumps(row["package_versions"], sort_keys=True)
         # Old runners still assign the historical names after construction.

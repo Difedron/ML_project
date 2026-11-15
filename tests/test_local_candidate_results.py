@@ -335,6 +335,16 @@ def test_cli_refuses_mixing_local_and_tabarena_protocols(pilot, arguments):
     assert exc.value.code == 2
 
 
+def test_trial_details_optional_and_preserved_when_supplied(pilot):
+    root, scores, _ = pilot
+    assert 'validation_trials' not in scores
+    validate_pmlb_candidate_results(scores, project_root=root)
+    trials = [{'config_id': 7, 'status': 'ok', 'validation_score': .7}]
+    scores['validation_trials'] = [copy.deepcopy(trials) for _ in range(len(scores))]
+    validated = validate_pmlb_candidate_results(scores, project_root=root)
+    assert validated.validation_trials.tolist() == scores.validation_trials.tolist()
+
+
 def test_legacy_bridge_still_accepts_nonpilot_metrics():
     row = CandidateResult(dataset_id="other", split_id="s0", model_id="a", model_version=None,
                           exact_model_id="legacy::a", validation_metric="roc_auc", test_metric="roc_auc",

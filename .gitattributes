@@ -2,6 +2,7 @@ data/PMLB/*.csv filter=lfs diff=lfs merge=lfs -text
 
 # Rita: preserve original dataset and split bytes
 data/splits/pmlb_*/holdout_0.json -text whitespace=cr-at-eol
+# Byte hashes refer to approved originals (CRLF); never normalize these CSVs.
 data/raw/pmlb_*/*.csv -text
 
 # Diana: preserve shared pilot split bytes
