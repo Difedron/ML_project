@@ -1,6 +1,7 @@
 """Candidate boundary. Model imports and fitting start on explicit run calls."""
 from copy import deepcopy
 import importlib.metadata
+import logging
 from pathlib import Path
 import time
 
@@ -22,6 +23,28 @@ CANDIDATE_RESULT_KEYS = (*JOIN_KEYS, "model_family", "variant", "exact_model_id"
 CHECKPOINTS = {"tabpfn": "tabpfn-v2.6-classifier-v2.6_default.ckpt",
                "tabicl": "tabicl-classifier-v2-20260212.ckpt"}
 METRICS = {"balanced_accuracy", "macro_f1", "roc_auc", "log_loss"}
+LOGGER = logging.getLogger(__name__)
+
+
+def _stage(result, name):
+    result.provenance["execution_stage"] = name
+    LOGGER.debug("%s: %s", result.model_id, name)
+
+
+def _record_neural_devices(result, model):
+    if result.model_family == "tabpfn":
+        devices = getattr(model, "devices_", ())
+    elif result.model_family == "tabicl":
+        device = getattr(model, "device_", None)
+        devices = () if device is None else (device,)
+    else:
+        return
+    if devices:
+        actual = [str(device) for device in devices]
+        result.provenance["estimator_devices"] = actual
+        LOGGER.debug("%s fitted estimator devices: %s", result.model_id, actual)
+        if any(device.split(":", 1)[0] != result.device for device in actual):
+            raise RuntimeError(f"Expected {result.device} but fitted estimator reports {actual}")
 
 
 class ExactModelUnavailableError(RuntimeError):
@@ -197,6 +220,7 @@ class BaseCandidate:
         return aligned_predictions(model, X, n_classes)
 
     def _evaluate_test(self, result, model, features, test_data):
+        _stage(result, "final_test")
         started = self.clock()
         try:
             X_test, y_test = test_data()
@@ -206,12 +230,15 @@ class BaseCandidate:
             result.balanced_accuracy, result.roc_auc, result.log_loss = (
                 scores[name] for name in ("balanced_accuracy", "roc_auc", "log_loss"))
             result.provenance["test_scores"] = scores
+            result.provenance["estimator_classes"] = np.asarray(model.classes_).tolist()
         finally:
             result.predict_time_sec = result.predict_time = self.clock() - started
 
     def _run_model(self, result, X_train, y_train, X_validation, y_validation, categorical_columns, test_data):
+        _stage(result, "initialization")
         init_started = self.clock()
         result.device = select_device(self.requested_device, self.model_family, probe=self.device_probe)
+        LOGGER.debug("%s actual device: %s", self.model_id, result.device)
         params = self._params(result.seed, X_train, categorical_columns, result)
         result.provenance["model_params"] = params
         identity_params = {key: value for key, value in params.items() if key != "model_path"}
@@ -225,12 +252,17 @@ class BaseCandidate:
         finally:
             result.model_init_time_sec = self.clock() - init_started
         features = TrainOnlyFeatures(categorical_columns, self.model_family)
+        _stage(result, "fit_train")
         fit_started = self.clock()
         try:
             self._fit(model, features, X_train, y_train, X_validation, y_validation, result.n_classes)
         finally:
             result.fit_time_sec = result.fit_time = self.clock() - fit_started
+        _record_neural_devices(result, model)
+        if self.model_family == "lightgbm":
+            result.provenance["best_iteration"] = getattr(model, "best_iteration_", None)
         result.tuning_time_sec = 0.0
+        _stage(result, "score_validation")
         validation_started = self.clock()
         predicted, probabilities = aligned_predictions(model, features.transform(X_validation), result.n_classes)
         validation_scores = classification_scores(y_validation, predicted, probabilities, np.arange(result.n_classes))
@@ -254,6 +286,7 @@ class BaseCandidate:
             model_family=self.model_family, variant=self.variant,
             checkpoint_version=CHECKPOINTS.get(self.model_family))
         try:
+            _stage(result, "input_validation")
             if model_id != self.model_id:
                 raise ValueError(f"This wrapper only implements {self.model_id}")
             if type(seed) is not int:
@@ -308,6 +341,7 @@ class BaseCandidate:
                 metric_direction="minimize" if result.validation_metric == "log_loss" else "maximize",
                 metric_scope="test", config_sha256=config_hash(self.config),
                 source_revisions=self.resources["source_revisions"])
+            _stage(result, "package_check")
             required = self.config["package_versions"][self.model_family]
             if versions[self.model_family] != required:
                 raise ExactModelUnavailableError(f"Expected {self.model_family} package {required}")
@@ -316,7 +350,10 @@ class BaseCandidate:
         except Exception as error:
             result.error_type, result.error_message = type(error).__name__, str(error)
             result.status = "unavailable_exact_version" if isinstance(error, ExactModelUnavailableError) else "error"
+            result.provenance["error_stage"] = result.provenance.get("execution_stage")
+            LOGGER.debug("%s failed", result.model_id, exc_info=True)
         finally:
+            result.provenance.pop("execution_stage", None)
             result.total_time_sec = self.clock() - started
         return result
 
@@ -347,7 +384,9 @@ class LightGBMPriorTuneCandidate(BaseCandidate):
         return np.argmax(probabilities, axis=1), probabilities
 
     def _run_model(self, result, X_train, y_train, X_validation, y_validation, categorical_columns, test_data):
+        _stage(result, "portfolio_check")
         result.device = select_device(self.requested_device, self.model_family)
+        LOGGER.debug("%s actual device: %s", self.model_id, result.device)
         spec = self.resources.get("portfolio", {})
         metric, direction, _ = priortune.selection_rule(result.n_classes)
         selection = dict(selected_config_id=None, selected_validation_metric=metric,
@@ -363,6 +402,7 @@ class LightGBMPriorTuneCandidate(BaseCandidate):
         path = contained_path(self.root, spec.get("cache_path"))
         configurations = priortune.load_portfolio(path, spec)
         features = TrainOnlyFeatures(categorical_columns, self.model_family, string_categories=True)
+        _stage(result, "validation_trials")
         started = self.clock()
         try:
             train = features.fit_transform(X_train)
@@ -379,7 +419,9 @@ class LightGBMPriorTuneCandidate(BaseCandidate):
                 f"Successful: {selection['successful_trials']}; failed: {selection['failed_trials']}. Skipping test evaluation.")
         model, trial = winner
         selection.update(selected_config_id=trial["config_id"], selected_validation_score=trial["validation_score"],
-                         effective_parameters=trial["effective_parameters"])
+                         effective_parameters=trial["effective_parameters"], best_iteration=trial["best_iteration"])
+        LOGGER.debug("%s selected config %s after %s validation trials", self.model_id, trial["config_id"],
+                     selection["successful_trials"])
         result.provenance["model_params"] = trial["effective_parameters"]
         result.validation_score = trial["validation_score"]
         result.provenance["validation_scores"] = {metric: result.validation_score}

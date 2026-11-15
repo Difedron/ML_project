@@ -133,6 +133,7 @@ def fake_options(portfolio, events, *, fail_ids=(), fail_validation_ids=(), ties
 
         def fit(self, X, y, **kwargs):
             self.classes_ = np.unique(y)[::-1]
+            self.best_iteration_ = self.config_id + 1
             self.validation_indices = tuple(kwargs["eval_set"][0][0].index)
             events.append(("fit", self.config_id, X, y, kwargs))
             if self.config_id in fail_ids:
@@ -230,6 +231,7 @@ def test_full_candidate_selects_by_validation_and_predicts_test_only_once(portfo
     assert events[-1][2]["stalk-root"].isna().all()
     winning_trial = by_id[winner]
     assert provenance["effective_parameters"] == winning_trial["effective_parameters"]
+    assert provenance["best_iteration"] == winning_trial["best_iteration"] == winner + 1
     assert result.fit_time_sec == result.fit_time == winning_trial["fit_time_sec"]
     assert result.validation_time_sec == winning_trial["validation_time_sec"]
     assert result.model_init_time_sec == winning_trial["model_init_time_sec"]

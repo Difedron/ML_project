@@ -115,6 +115,7 @@ def test_common_api_scores_class_alignment_timings_and_train_isolation(setup, wr
     assert result.device == "cpu" and result.python_version
     assert result.package_versions[wrapper.model_family]
     assert result.provenance["join_key"] == ["pmlb_unit", "shared_rita", 77]
+    assert result.provenance["estimator_classes"] == list(reversed(range(n_classes)))
     fit = next(event for event in events if event[0] == "fit")
     assert fit[1].index.equals(data[0].index)
     assert "target_hint" in fit[1] and "target" not in fit[1]
@@ -224,6 +225,7 @@ def test_error_status_does_not_fabricate_scores(setup):
     result = run(TabPFN26Candidate(**options))
     assert result.status == "error" and result.error_type == "RuntimeError"
     assert result.error_message == "Fake fit failure" and result.total_time_sec > 0
+    assert result.provenance["error_stage"] == "fit_train"
     assert result.fit_time_sec > 0 and result.fit_time == result.fit_time_sec
     assert np.isnan(result.validation_score) and np.isnan(result.test_score)
     assert not any(event[0] == "predict_proba" for event in events)
@@ -236,6 +238,24 @@ def test_unavailable_package_stops_before_native_device_probe(setup):
     options["device_probe"] = lambda *args: pytest.fail("Native device probe must not run")
     result = run(TabPFN26Candidate(**options))
     assert result.status == "unavailable_exact_version" and events == []
+
+
+def test_neural_backend_device_mismatch_stops_before_scoring(setup):
+    events = []
+    options = dependencies(setup, events=events)
+    options["device_probe"] = lambda device, family: device == "mps"
+
+    def factory(family, params):
+        assert params["device"] == "mps"
+        model = FakeEstimator(events)
+        model.devices_ = ("cpu",)
+        return model
+
+    options["estimator_factory"] = factory
+    result = run(TabPFN26Candidate(**options))
+    assert result.status == "error" and result.provenance["error_stage"] == "fit_train"
+    assert result.provenance["estimator_devices"] == ["cpu"]
+    assert [event[0] for event in events] == ["fit"]
 
 
 def test_categories_nan_unknown_and_raw_immutability():
@@ -390,6 +410,17 @@ def test_scoring_rejects_invalid_predictions(bad):
         predicted[0] = 9
     with pytest.raises(ValueError):
         classification_scores(y, predicted, probabilities, np.array([0, 1]))
+
+
+@pytest.mark.filterwarnings("error:The y_prob values do not sum to one")
+def test_float32_softmax_rounding_is_normalized_only_for_log_loss():
+    labels = np.array([0, 1])
+    probabilities = np.array([[.9, .1], [.2, .8]], dtype=np.float32).astype(float)
+    assert np.max(np.abs(probabilities.sum(axis=1) - 1)) > np.sqrt(np.finfo(float).eps)
+    expected = -np.log(probabilities.diagonal() / probabilities.sum(axis=1)).mean()
+    scores = classification_scores(labels, labels, probabilities, labels)
+    assert scores["log_loss"] == pytest.approx(expected, abs=1e-12, rel=0)
+    assert scores["roc_auc"] == 1.0
 
 
 def test_import_and_constructor_never_import_models_or_landmarkers():

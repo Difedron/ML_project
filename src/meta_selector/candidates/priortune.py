@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 import hashlib
 import json
+import logging
 from math import isfinite
 from pathlib import Path
 
@@ -33,6 +34,7 @@ PUBLISHED_PARAMETERS = (INTEGER_PARAMETERS.keys() | FRACTION_PARAMETERS | NONNEG
                         | {"extra_trees", "learning_rate"})
 TRAINING_POLICY = {"n_estimators": 1000, "stopping_rounds": 50, "first_metric_only": True,
                    "min_delta": 0.0, "verbose": False}
+LOGGER = logging.getLogger(__name__)
 
 
 class PortfolioError(ValueError):
@@ -145,7 +147,7 @@ def select_on_validation(configurations, train, y_train, validation, y_validatio
         params = effective_parameters(config, result.seed, result.n_classes)
         trial = dict(**trial_context, config_id=config.config_id, effective_parameters=params,
                      validation_score=None, model_init_time_sec=None, fit_time_sec=None,
-                     validation_time_sec=None, status="ok", error_type="", error_message="")
+                     validation_time_sec=None, best_iteration=None, status="ok", error_type="", error_message="")
         try:
             init_started = clock()
             try:
@@ -159,6 +161,7 @@ def select_on_validation(configurations, train, y_train, validation, y_validatio
                           categorical_feature=list(categorical_columns), callbacks=[callback_factory(**callback_options)])
             finally:
                 trial["fit_time_sec"] = clock() - fit_started
+            trial["best_iteration"] = getattr(model, "best_iteration_", None)
             score_started = clock()
             try:
                 probabilities = aligned_class_probabilities(model, validation.copy(deep=True), result.n_classes)
@@ -173,9 +176,12 @@ def select_on_validation(configurations, train, y_train, validation, y_validatio
                 best = (rank, model, trial)
         except Exception as error:
             trial.update(status="error", error_type=type(error).__name__, error_message=str(error))
+            LOGGER.debug("PriorTune config %s failed", config.config_id, exc_info=True)
         finally:
             trial["total_trial_time_sec"] = clock() - started
             result.validation_trials.append(trial)
+            LOGGER.debug("PriorTune config %s: validation %s=%s, best_iteration=%s, status=%s",
+                         config.config_id, metric, trial["validation_score"], trial["best_iteration"], trial["status"])
     return None if best is None else best[1:]
 
 

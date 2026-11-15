@@ -53,6 +53,12 @@ def _roc_auc(y, probabilities, classes):
                                labels=classes, multi_class="ovr", average="macro"))
 
 
+def _log_loss(y, probabilities, classes):
+    # Float32 softmax rows can be valid at source precision but warn after float64 conversion.
+    normalized = probabilities / probabilities.sum(axis=1, keepdims=True)
+    return float(log_loss(y, normalized, labels=classes))
+
+
 def classification_probability_score(y, probabilities, metric):
     """Score only the chosen probability metric on integer-encoded labels."""
     probabilities = np.asarray(probabilities)
@@ -62,7 +68,7 @@ def classification_probability_score(y, probabilities, metric):
     if metric == "roc_auc":
         return _roc_auc(y, probabilities, classes)
     if metric == "log_loss":
-        return float(log_loss(y, probabilities, labels=classes))
+        return _log_loss(y, probabilities, classes)
     raise ValueError(f"Unknown probability metric: {metric}")
 
 
@@ -76,5 +82,5 @@ def classification_scores(y, predicted, probabilities, classes):
         "balanced_accuracy": float(balanced_accuracy_score(y, predicted)),
         "macro_f1": float(f1_score(y, predicted, average="macro", zero_division=0)),
         "roc_auc": _roc_auc(y, probabilities, classes),
-        "log_loss": float(log_loss(y, probabilities, labels=classes)),
+        "log_loss": _log_loss(y, probabilities, classes),
     }
