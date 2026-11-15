@@ -204,6 +204,8 @@ def test_reject_invalid_or_incomplete_cohorts(pilot, case):
         scores["test_score"] = scores.test_score.astype("Float64")
         scores.loc[0, "test_score"] = pd.NA
     elif case in {"invalid_json", "dict_provenance"}:
+        if case == "dict_provenance":
+            scores["provenance"] = scores.provenance.astype(object)
         scores.at[0, "provenance"] = "not json" if case == "invalid_json" else {"is_final": True}
     elif case == "missing_column":
         scores = scores.drop(columns="validation_score")
